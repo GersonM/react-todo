@@ -59,7 +59,7 @@ class AddTaksForm extends React.Component {
     console.log('send', formData);
 
     axios.post('registro', formData, {headers: {"content-type": "multipart/form-data"}}).then(response => {
-      this.setState({tasks: response.data});
+      this.setState({tasks: response.data, imageUrl:'', description:''});
       if (this.props.hasOwnProperty('onCreate'))
         this.props.onCreate();
     });
@@ -109,7 +109,7 @@ class AddTaksForm extends React.Component {
             </Upload>
           </Col>
           <Col span={21}>
-            <TextArea onChange={this.onChangeText} rows={4}/>
+            <TextArea onChange={this.onChangeText} value={description} rows={4}/>
           </Col>
         </Row>
 
