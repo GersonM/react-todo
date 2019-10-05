@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Button, Icon, Input, List, Spin, Upload } from "antd";
+import { Button, Col, Divider, Icon, Row, Upload } from "antd";
 import axios from "axios";
 import TextArea from "antd/es/input/TextArea";
 
@@ -17,7 +17,7 @@ class AddTaksForm extends React.Component {
       users: [],
       pagination: null,
       tasks: [],
-      imageUrl:''
+      imageUrl: ''
     };
   }
 
@@ -43,7 +43,7 @@ class AddTaksForm extends React.Component {
 
 
   onChangeText = (event) => {
-    this.setState({description:event.target.value})
+    this.setState({description: event.target.value})
   };
 
   addTask = () => {
@@ -52,7 +52,7 @@ class AddTaksForm extends React.Component {
     const paramsData = {
       estado: 0,
       descripcion: description,
-      archivo:"ddd"
+      archivo: "ddd"
     };
 
     axios.post('registro', paramsData).then(response => {
@@ -60,8 +60,8 @@ class AddTaksForm extends React.Component {
     });
   };
 
-  onChange(info) {
-    const { status } = info.file;
+  onChange(info){
+    const {status} = info.file;
     if (status !== 'uploading') {
       console.log(info.file, info.fileList);
     }
@@ -74,7 +74,7 @@ class AddTaksForm extends React.Component {
 
   handleChange = info => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
+      this.setState({loading: true});
       return;
     }
     if (info.file.status === 'done') {
@@ -93,26 +93,34 @@ class AddTaksForm extends React.Component {
 
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
-        <div className="ant-upload-text">Upload</div>
+        <Icon type={this.state.loading ? 'loading' : 'paper-clip'} style={{fontSize:25}}/>
+        <div className="ant-upload-text">Arrastra una image</div>
       </div>
     );
 
     return (
       <div>
         <h1>Crear tarea</h1>
-        <TextArea onChange={this.onChangeText} />
-        <Upload
-          name="file"
-          listType="picture-card"
-          className="avatar-uploader"
-          showUploadList={false}
-          action="http://ialab.io/api/registro"
-          onChange={this.handleChange}
-        >
-          {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-        </Upload>
-        <Button onClick={this.addTask}>Agregar tarea</Button>
+        <Row gutter={16}>
+          <Col span={3}>
+            <Upload
+              name="file"
+              listType="picture-card"
+              className="avatar-uploader"
+              showUploadList={false}
+              action="http://ialab.io/api/registro"
+              onChange={this.handleChange}
+            >
+              {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
+            </Upload>
+          </Col>
+          <Col span={21}>
+            <TextArea onChange={this.onChangeText} rows={4}/>
+          </Col>
+        </Row>
+
+        <Button icon={'plus'} size={"large"} type={"primary"} onClick={this.addTask}>Agregar tarea</Button>
+        <Divider/>
       </div>
     );
   }

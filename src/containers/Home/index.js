@@ -46,7 +46,7 @@ class Home extends React.Component {
     //tasks[index].descripcion = 'Patanjali es considerado por la tradición, como el autor de los Yoga Sutras, en los cuales él provee un acercamiento de ocho pilares para el bienestar y la purificación del cuerpo, mente y alma, considerada la obra con más autoridad en la materia sobre el Yoga Darsana, de indiscutida referencia en todas las tradiciones y corrientes del Yoga.';
     this.setState({tasks});
     axios.post('actualizar/' + tasks[index].id, tasks[index]).then(response => {
-      tasks[index] = response.data;
+      //tasks[index] = response.data;
       tasks[index].loading = false;
       tasks[index].edit = false;
       this.setState({tasks});
@@ -97,7 +97,7 @@ class Home extends React.Component {
                                                    type={"primary"} icon={'check'}
                                                    size={"small"} shape={"round"} onClick={() => this.editTask(index, 1)}>Completar</Button> :
                         <Button loading={item.loading} ghost
-                                type={"danger"} icon={'cross'}
+                                type={"danger"} icon={'close'}
                                 size={"small"} shape={"round"} onClick={() => this.editTask(index, 1)}>Marcar como pendiente</Button>}
 
                       {item.edit ? <Button type={"primary"} icon={'save'} ghost
