@@ -92,6 +92,11 @@ class Home extends React.Component {
                 title={item.edit ? <TextArea value={item.descripcion} onChange={(event) => this.onChangeTask(index, event.target.value)}/> : item.descripcion}
                 description={
                   <div>
+                    <div>
+                      <a href={item.archivo} target="_blank">
+                        <img src={item.archivo} alt="" width={100}/>
+                      </a>
+                    </div>
                     <Button.Group>
                       {item.estado !== 1 ? <Button loading={item.loading} ghost
                                                    type={"primary"} icon={'check'}
