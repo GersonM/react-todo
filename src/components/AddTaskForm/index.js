@@ -17,7 +17,9 @@ class AddTaksForm extends React.Component {
       users: [],
       pagination: null,
       tasks: [],
-      imageUrl: ''
+      imageUrl: '',
+      description: '',
+      file: null
     };
   }
 
@@ -43,57 +45,50 @@ class AddTaksForm extends React.Component {
 
 
   onChangeText = (event) => {
-    this.setState({description: event.target.value})
+    this.setState({description: event.target.value});
   };
 
   addTask = () => {
-    const {tasks, newTask, description} = this.state;
+    const {tasks, newTask, description, file} = this.state;
 
-    const paramsData = {
-      estado: 0,
-      descripcion: description,
-      archivo: "ddd"
-    };
+    let formData = new FormData();
+    formData.append("archivo", file);
+    formData.append("estado", '0');
+    formData.append("descripcion", description);
 
-    axios.post('registro', paramsData).then(response => {
+    console.log('send', formData);
+
+    axios.post('registro', formData, {headers: {"content-type": "multipart/form-data"}}).then(response => {
       this.setState({tasks: response.data});
+      if (this.props.hasOwnProperty('onCreate'))
+        this.props.onCreate();
     });
   };
 
-  onChange(info){
-    const {status} = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  }
-
   handleChange = info => {
-    if (info.file.status === 'uploading') {
-      this.setState({loading: true});
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
-    }
+    console.log(info);
+    this.setState({file: info.file.originFileObj});
+
+    this.getBase64(info.file.originFileObj, imageUrl =>
+      this.setState({
+        imageUrl,
+        loading: false,
+      }),
+    );
   };
 
+  getBase64(img, callback){
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+
   render(){
-    const {imageUrl} = this.state;
+    const {imageUrl, description} = this.state;
 
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'paper-clip'} style={{fontSize:25}}/>
+        <Icon type={this.state.loading ? 'loading' : 'paper-clip'} style={{fontSize: 25}}/>
         <div className="ant-upload-text">Arrastra una image</div>
       </div>
     );
@@ -104,11 +99,10 @@ class AddTaksForm extends React.Component {
         <Row gutter={16}>
           <Col span={3}>
             <Upload
-              name="file"
+              name="archivo"
               listType="picture-card"
               className="avatar-uploader"
               showUploadList={false}
-              action="http://ialab.io/api/registro"
               onChange={this.handleChange}
             >
               {imageUrl ? <img src={imageUrl} alt="avatar" style={{width: '100%'}}/> : uploadButton}
@@ -119,13 +113,14 @@ class AddTaksForm extends React.Component {
           </Col>
         </Row>
 
-        <Button icon={'plus'} size={"large"} type={"primary"} onClick={this.addTask}>Agregar tarea</Button>
+        <Button disabled={description === ''} icon={'plus'} size={"large"} type={"primary"} onClick={this.addTask}>Agregar tarea</Button>
         <Divider/>
       </div>
     );
   }
 }
 
-AddTaksForm.propTypes = {};
+AddTaksForm.propTypes = {
+};
 
 export default AddTaksForm;

@@ -26,11 +26,11 @@ class Home extends React.Component {
     this.listTasks();
   }
 
-  listTasks(){
+  listTasks = () => {
     axios.get('listado').then(response => {
       this.setState({tasks: response.data});
     });
-  }
+  };
 
   setToEdit = (index) => {
     const {tasks} = this.state;
@@ -42,7 +42,7 @@ class Home extends React.Component {
     const {tasks} = this.state;
     //const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     tasks[index].loading = true;
-    if(status) tasks[index].estado = status;
+    if (status) tasks[index].estado = status;
     //tasks[index].descripcion = 'Patanjali es considerado por la tradición, como el autor de los Yoga Sutras, en los cuales él provee un acercamiento de ocho pilares para el bienestar y la purificación del cuerpo, mente y alma, considerada la obra con más autoridad en la materia sobre el Yoga Darsana, de indiscutida referencia en todas las tradiciones y corrientes del Yoga.';
     this.setState({tasks});
     axios.post('actualizar/' + tasks[index].id, tasks[index]).then(response => {
@@ -72,7 +72,7 @@ class Home extends React.Component {
         </Helmet>
 
         <h1>TODO List</h1>
-        <AddTaksForm/>
+        <AddTaksForm onCreate={this.listTasks}/>
         <List
           itemLayout="horizontal"
           dataSource={tasks}
@@ -98,12 +98,12 @@ class Home extends React.Component {
                                                    size={"small"} shape={"round"} onClick={() => this.editTask(index, 1)}>Completar</Button> :
                         <Button loading={item.loading} ghost
                                 type={"danger"} icon={'close'}
-                                size={"small"} shape={"round"} onClick={() => this.editTask(index, 1)}>Marcar como pendiente</Button>}
+                                size={"small"} shape={"round"} onClick={() => this.editTask(index, 2)}>Marcar como pendiente</Button>}
 
                       {item.edit ? <Button type={"primary"} icon={'save'} ghost
                                            size={"small"} shape={"round"} onClick={() => this.editTask(index)}>Guardar</Button> : <Button type={"primary"} icon={'edit'} ghost
-                                                                                                                                           size={"small"} shape={"round"}
-                                                                                                                                           onClick={() => this.setToEdit(index)}>Editar</Button>}
+                                                                                                                                          size={"small"} shape={"round"}
+                                                                                                                                          onClick={() => this.setToEdit(index)}>Editar</Button>}
                     </Button.Group>
                   </div>
                 }
